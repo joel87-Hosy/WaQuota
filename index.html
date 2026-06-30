@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WaQuote</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --text: #182026;
+        --muted: #68737d;
+        --line: #dce2e8;
+        --green: #128c7e;
+        --green-dark: #0b6f63;
+        --red: #c9362b;
+        --red-bg: #fff0ee;
+        --green-bg: #eaf8f3;
+        --amber-bg: #fff6df;
+        --amber: #9a6a00;
+        --shadow: 0 16px 40px rgba(24, 32, 38, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 248px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        background: #10221f;
+        color: #f5fbf8;
+        padding: 24px 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--green);
+        font-weight: 800;
+      }
+
+      .brand strong {
+        display: block;
+        font-size: 18px;
+      }
+
+      .brand span {
+        color: #a8c1ba;
+        font-size: 12px;
+      }
+
+      .nav {
+        display: grid;
+        gap: 8px;
+      }
+
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 40px;
+        border-radius: 8px;
+        color: #d6e4df;
+        padding: 0 12px;
+        text-decoration: none;
+      }
+
+      .nav a.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      .view {
+        display: none;
+      }
+
+      .view.active {
+        display: block;
+      }
+
+      .content {
+        padding: 26px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+        gap: 12px;
+        min-width: 430px;
+      }
+
+      .stat {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+      }
+
+      .stat span {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+      }
+
+      .stat strong {
+        display: block;
+        margin-top: 5px;
+        font-size: 24px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 340px minmax(0, 1fr) 310px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .settings-grid,
+      .quotes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .panel-header {
+        padding: 18px 18px 0;
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        font-size: 17px;
+      }
+
+      .panel-header p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .form {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+      }
+
+      .list {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+      }
+
+      .quote-card {
+        display: grid;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #fbfcfd;
+      }
+
+      .quote-card header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .quote-card h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .quote-card p {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .quote-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 0 12px;
+        text-decoration: none;
+      }
+
+      .textarea {
+        width: 100%;
+        min-height: 120px;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text);
+        background: #fbfcfd;
+        font: inherit;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+
+      .field label {
+        color: #3c474f;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .field input {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0 12px;
+        color: var(--text);
+        background: #fbfcfd;
+      }
+
+      .drop {
+        display: grid;
+        place-items: center;
+        min-height: 132px;
+        border: 1px dashed #9fb0bc;
+        border-radius: 8px;
+        background: #fbfcfd;
+        color: var(--muted);
+        text-align: center;
+        padding: 16px;
+      }
+
+      .drop strong {
+        color: var(--text);
+        display: block;
+      }
+
+      .primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--green);
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: 800;
+        padding: 0 14px;
+      }
+
+      .primary:hover {
+        background: var(--green-dark);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 14px 16px;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      .name {
+        display: grid;
+        gap: 2px;
+      }
+
+      .name span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 28px;
+        border-radius: 999px;
+        padding: 0 10px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .badge.red {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+
+      .badge.green {
+        background: var(--green-bg);
+        color: var(--green-dark);
+      }
+
+      .badge.amber {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+
+      .whatsapp {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        border-radius: 8px;
+        background: #25d366;
+        color: #092d1b;
+        font-size: 13px;
+        font-weight: 900;
+        padding: 0 12px;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .viewer {
+        padding: 18px;
+      }
+
+      .phone {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: #1f2c34;
+      }
+
+      .phone-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 54px;
+        padding: 0 14px;
+        color: #eff7f4;
+      }
+
+      .pdf {
+        margin: 0 10px 10px;
+        min-height: 410px;
+        border-radius: 14px;
+        background:
+          linear-gradient(#ffffff, #ffffff) padding-box,
+          linear-gradient(135deg, #e6edf2, #cfd9df) border-box;
+        border: 1px solid transparent;
+        padding: 18px;
+      }
+
+      .pdf-line {
+        height: 10px;
+        border-radius: 20px;
+        background: #dfe6eb;
+        margin-bottom: 12px;
+      }
+
+      .pdf-line.short {
+        width: 58%;
+      }
+
+      .pdf-total {
+        margin-top: 42px;
+        border-top: 1px solid #dfe6eb;
+        padding-top: 18px;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .public-link {
+        display: block;
+        margin-top: 14px;
+        color: var(--green-dark);
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+      }
+
+      @media (max-width: 1180px) {
+        .grid {
+          grid-template-columns: 320px minmax(0, 1fr);
+        }
+
+        .viewer-panel {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+          padding: 16px;
+        }
+
+        .nav {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .topbar {
+          display: grid;
+        }
+
+        .stats {
+          min-width: 0;
+          grid-template-columns: 1fr;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .settings-grid,
+        .quotes-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">WQ</div>
+          <div>
+            <strong>WaQuote</strong>
+            <span>Suivi de devis PDF</span>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="Navigation principale">
+          <a class="active" href="#dashboard" data-view-link="dashboard">Tableau</a>
+          <a href="#quotes" data-view-link="quotes">Devis</a>
+          <a href="#settings" data-view-link="settings">R&eacute;glages</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section class="view active" id="dashboard-view">
+          <header class="topbar">
+            <div>
+              <h1>Relances WhatsApp</h1>
+              <p class="subtitle">Devis class&eacute;s par urgence commerciale.</p>
+            </div>
+
+            <section class="stats" aria-label="Statistiques">
+              <div class="stat">
+                <span>Devis envoy&eacute;s</span>
+                <strong>18</strong>
+              </div>
+              <div class="stat">
+                <span>Ouverts</span>
+                <strong>11</strong>
+              </div>
+              <div class="stat">
+                <span>&Agrave; relancer</span>
+                <strong>5</strong>
+              </div>
+            </section>
+          </header>
+
+          <div class="grid">
+          <article class="panel">
+            <div class="panel-header">
+              <h2>Nouveau devis</h2>
+              <p>Le PDF sera stock&eacute; dans le bucket priv&eacute; Supabase.</p>
+            </div>
+
+            <form class="form">
+              <label class="drop">
+                <input type="file" accept="application/pdf" hidden />
+                <span>
+                  <strong>D&eacute;poser le PDF</strong>
+                  PDF uniquement, 10 Mo maximum
+                </span>
+              </label>
+
+              <div class="field">
+                <label for="prospect-name">Nom du prospect</label>
+                <input id="prospect-name" placeholder="Ex: Koffi Mensah" />
+              </div>
+
+              <div class="field">
+                <label for="phone">T&eacute;l&eacute;phone WhatsApp</label>
+                <input id="phone" placeholder="+2250700000000" />
+              </div>
+
+              <div class="field">
+                <label for="amount">Montant du devis</label>
+                <input id="amount" placeholder="750000" inputmode="decimal" />
+              </div>
+
+              <button class="primary" type="button">Cr&eacute;er le lien</button>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <h2>Dashboard</h2>
+              <p>Les devis non ouverts apr&egrave;s 48h remontent en priorit&eacute;.</p>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Prospect</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Ouvertures</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="name">
+                        <strong>Amadou Traor&eacute;</strong>
+                        <span>Envoy&eacute; il y a 3 jours</span>
+                      </div>
+                    </td>
+                    <td>1 250 000 FCFA</td>
+                    <td><span class="badge red">Pas ouvert</span></td>
+                    <td>0</td>
+                    <td>
+                      <a
+                        class="whatsapp"
+                        target="_blank"
+                        rel="noreferrer"
+                        href="https://wa.me/2250700000000?text=Bonjour%20Amadou%2C%20je%20me%20permets%20de%20vous%20relancer%20concernant%20le%20devis%20envoy%C3%A9.%20Voici%20le%20lien%20%3A%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken"
+                      >
+                        Relancer sur WhatsApp
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="name">
+                        <strong>Awa Kouam&eacute;</strong>
+                        <span>Vu aujourd&rsquo;hui &agrave; 09:42</span>
+                      </div>
+                    </td>
+                    <td>480 000 FCFA</td>
+                    <td><span class="badge green">Vu le 30/06</span></td>
+                    <td>3</td>
+                    <td>
+                      <a
+                        class="whatsapp"
+                        target="_blank"
+                        rel="noreferrer"
+                        href="https://wa.me/2250500000000?text=Bonjour%20Awa%2C%20avez-vous%20pu%20regarder%20le%20devis%20%3F%20Je%20reste%20disponible%20si%20vous%20avez%20des%20questions.%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken"
+                      >
+                        Demander un retour
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="name">
+                        <strong>Soci&eacute;t&eacute; Nimba</strong>
+                        <span>Envoy&eacute; il y a 18h</span>
+                      </div>
+                    </td>
+                    <td>2 900 000 FCFA</td>
+                    <td><span class="badge amber">En attente</span></td>
+                    <td>0</td>
+                    <td>
+                      <a
+                        class="whatsapp"
+                        target="_blank"
+                        rel="noreferrer"
+                        href="https://wa.me/2250100000000?text=Bonjour%2C%20voici%20le%20lien%20du%20devis%20%3A%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken"
+                      >
+                        Ouvrir WhatsApp
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel viewer-panel">
+            <div class="panel-header">
+              <h2>Page publique</h2>
+              <p>Le PDF sera servi par une signed URL temporaire.</p>
+            </div>
+
+            <div class="viewer">
+              <div class="phone" aria-label="Aper&ccedil;u mobile du devis">
+                <div class="phone-top">
+                  <strong>Devis</strong>
+                  <span>PDF</span>
+                </div>
+                <div class="pdf">
+                  <div class="pdf-line"></div>
+                  <div class="pdf-line short"></div>
+                  <div class="pdf-line"></div>
+                  <div class="pdf-line short"></div>
+                  <div class="pdf-total">750 000 FCFA</div>
+                </div>
+              </div>
+              <a class="public-link" href="#">monsite.com/read/0f4d...91b</a>
+            </div>
+          </article>
+          </div>
+        </section>
+
+        <section class="view" id="quotes-view">
+          <header class="topbar">
+            <div>
+              <h1>Devis</h1>
+              <p class="subtitle">Tous les liens envoy&eacute;s, avec leur historique d'ouverture.</p>
+            </div>
+          </header>
+
+          <div class="quotes-grid">
+            <article class="panel">
+              <div class="panel-header">
+                <h2>Biblioth&egrave;que</h2>
+                <p>Vue rapide des devis g&eacute;n&eacute;r&eacute;s.</p>
+              </div>
+
+              <div class="list">
+                <section class="quote-card">
+                  <header>
+                    <div>
+                      <h3>DEV-2026-018 - Amadou Traor&eacute;</h3>
+                      <p>1 250 000 FCFA - cr&eacute;&eacute; le 27/06/2026</p>
+                    </div>
+                    <span class="badge red">Pas ouvert</span>
+                  </header>
+                  <div class="quote-actions">
+                    <a class="secondary" href="#">Copier le lien</a>
+                    <a class="whatsapp" target="_blank" rel="noreferrer" href="https://wa.me/2250700000000?text=Bonjour%20Amadou%2C%20voici%20le%20lien%20du%20devis%20%3A%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken">WhatsApp</a>
+                  </div>
+                </section>
+
+                <section class="quote-card">
+                  <header>
+                    <div>
+                      <h3>DEV-2026-017 - Awa Kouam&eacute;</h3>
+                      <p>480 000 FCFA - ouvert 3 fois</p>
+                    </div>
+                    <span class="badge green">Vu</span>
+                  </header>
+                  <div class="quote-actions">
+                    <a class="secondary" href="#">Voir le PDF</a>
+                    <a class="whatsapp" target="_blank" rel="noreferrer" href="https://wa.me/2250500000000?text=Bonjour%20Awa%2C%20avez-vous%20pu%20regarder%20le%20devis%20%3F">Relancer</a>
+                  </div>
+                </section>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-header">
+                <h2>D&eacute;tail</h2>
+                <p>Informations qui seront reli&eacute;es &agrave; Supabase.</p>
+              </div>
+              <div class="form">
+                <div class="field">
+                  <label>Token public</label>
+                  <input value="0f4d9f6a-72c1-4f10-91b0-demo" readonly />
+                </div>
+                <div class="field">
+                  <label>Chemin Storage</label>
+                  <input value="user-id/dev-2026-018.pdf" readonly />
+                </div>
+                <div class="field">
+                  <label>Dernier &eacute;v&eacute;nement</label>
+                  <input value="Aucune ouverture d&eacute;tect&eacute;e" readonly />
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="settings-view">
+          <header class="topbar">
+            <div>
+              <h1>R&eacute;glages</h1>
+              <p class="subtitle">Param&egrave;tres de relance et mod&egrave;les WhatsApp.</p>
+            </div>
+          </header>
+
+          <div class="settings-grid">
+            <article class="panel">
+              <div class="panel-header">
+                <h2>Entreprise</h2>
+                <p>Ces valeurs personnaliseront les messages envoy&eacute;s.</p>
+              </div>
+              <form class="form">
+                <div class="field">
+                  <label for="company-name">Nom commercial</label>
+                  <input id="company-name" value="WaQuote Demo" />
+                </div>
+                <div class="field">
+                  <label for="sender-phone">Num&eacute;ro WhatsApp</label>
+                  <input id="sender-phone" value="+2250102030405" />
+                </div>
+                <button class="primary" type="button">Enregistrer</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-header">
+                <h2>Message de relance</h2>
+                <p>Le lien du devis sera ajout&eacute; automatiquement.</p>
+              </div>
+              <form class="form">
+                <div class="field">
+                  <label for="template">Mod&egrave;le WhatsApp</label>
+                  <textarea class="textarea" id="template">Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}. Voici le lien : {{link}}</textarea>
+                </div>
+                <button class="primary" type="button">Sauvegarder</button>
+              </form>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const links = document.querySelectorAll("[data-view-link]");
+      const views = document.querySelectorAll(".view");
+
+      function activateView(name) {
+        links.forEach((link) => {
+          link.classList.toggle("active", link.dataset.viewLink === name);
+        });
+
+        views.forEach((view) => {
+          view.classList.toggle("active", view.id === `${name}-view`);
+        });
+      }
+
+      links.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          const viewName = link.dataset.viewLink;
+          activateView(viewName);
+          history.replaceState(null, "", `#${viewName}`);
+        });
+      });
+
+      const initialView = location.hash.replace("#", "") || "dashboard";
+      if (document.getElementById(`${initialView}-view`)) {
+        activateView(initialView);
+      }
+    </script>
+  </body>
+</html>
