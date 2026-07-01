@@ -1,6 +1,6 @@
 create extension if not exists pgcrypto;
 
-create table public.quotes (
+create table if not exists public.quotes (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
 
@@ -26,13 +26,13 @@ create table public.quotes (
   constraint quotes_pdf_path_not_blank check (length(trim(pdf_path)) > 0)
 );
 
-create index quotes_user_id_created_at_idx
+create index if not exists quotes_user_id_created_at_idx
   on public.quotes (user_id, created_at desc);
 
-create index quotes_user_id_opened_created_at_idx
+create index if not exists quotes_user_id_opened_created_at_idx
   on public.quotes (user_id, opened, created_at desc);
 
-create index quotes_public_token_idx
+create index if not exists quotes_public_token_idx
   on public.quotes (public_token);
 
 create or replace function public.set_updated_at()
@@ -44,6 +44,8 @@ begin
   return new;
 end;
 $$;
+
+drop trigger if exists set_quotes_updated_at on public.quotes;
 
 create trigger set_quotes_updated_at
 before update on public.quotes
@@ -84,11 +86,15 @@ $$;
 
 alter table public.quotes enable row level security;
 
+drop policy if exists "Users can read their own quotes" on public.quotes;
+
 create policy "Users can read their own quotes"
 on public.quotes
 for select
 to authenticated
 using (auth.uid() = user_id);
+
+drop policy if exists "Users can create their own quotes" on public.quotes;
 
 create policy "Users can create their own quotes"
 on public.quotes
@@ -96,12 +102,16 @@ for insert
 to authenticated
 with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update their own quotes" on public.quotes;
+
 create policy "Users can update their own quotes"
 on public.quotes
 for update
 to authenticated
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete their own quotes" on public.quotes;
 
 create policy "Users can delete their own quotes"
 on public.quotes
@@ -126,6 +136,8 @@ set
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
+drop policy if exists "Users can upload their quote PDFs" on storage.objects;
+
 create policy "Users can upload their quote PDFs"
 on storage.objects
 for insert
@@ -135,6 +147,8 @@ with check (
   and (storage.foldername(name))[1] = auth.uid()::text
 );
 
+drop policy if exists "Users can read their quote PDFs" on storage.objects;
+
 create policy "Users can read their quote PDFs"
 on storage.objects
 for select
@@ -143,6 +157,8 @@ using (
   bucket_id = 'quotes-pdf'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+
+drop policy if exists "Users can update their quote PDFs" on storage.objects;
 
 create policy "Users can update their quote PDFs"
 on storage.objects
@@ -156,6 +172,8 @@ with check (
   bucket_id = 'quotes-pdf'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+
+drop policy if exists "Users can delete their quote PDFs" on storage.objects;
 
 create policy "Users can delete their quote PDFs"
 on storage.objects

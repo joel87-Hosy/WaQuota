@@ -1,4 +1,14 @@
-create table public.profiles (
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create table if not exists public.profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   company_name text not null default '',
   whatsapp_phone text not null default '',
@@ -12,6 +22,8 @@ create table public.profiles (
   constraint profiles_currency_not_blank check (length(trim(currency)) > 0)
 );
 
+drop trigger if exists set_profiles_updated_at on public.profiles;
+
 create trigger set_profiles_updated_at
 before update on public.profiles
 for each row
@@ -19,17 +31,23 @@ execute function public.set_updated_at();
 
 alter table public.profiles enable row level security;
 
+drop policy if exists "Users can read their own profile" on public.profiles;
+
 create policy "Users can read their own profile"
 on public.profiles
 for select
 to authenticated
 using (auth.uid() = user_id);
 
+drop policy if exists "Users can create their own profile" on public.profiles;
+
 create policy "Users can create their own profile"
 on public.profiles
 for insert
 to authenticated
 with check (auth.uid() = user_id);
+
+drop policy if exists "Users can update their own profile" on public.profiles;
 
 create policy "Users can update their own profile"
 on public.profiles
