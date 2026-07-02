@@ -54,15 +54,62 @@ a {
   padding: 24px;
 }
 
+.auth-card-signup {
+  border-color: rgba(18, 140, 126, 0.35);
+  box-shadow:
+    0 18px 44px rgba(24, 32, 38, 0.1),
+    0 0 0 6px rgba(18, 140, 126, 0.06);
+}
+
+.auth-card-signup .brand-mark {
+  background: linear-gradient(135deg, #128c7e, #25d366);
+  color: #ffffff;
+}
+
+.auth-intro {
+  border: 1px solid rgba(18, 140, 126, 0.2);
+  border-radius: 8px;
+  background: #eefaf5;
+  padding: 14px;
+}
+
+.auth-intro h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.auth-intro p {
+  color: #3c6d60;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 6px 0 0;
+}
+
+.auth-card-signup .form {
+  padding-top: 16px;
+}
+
+.auth-card-signup .primary {
+  min-height: 44px;
+  box-shadow: 0 10px 22px rgba(18, 140, 126, 0.18);
+}
+
+.auth-alt {
+  min-height: 42px;
+}
+
 .shell {
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
   background: #10221f;
   color: #f5fbf8;
+  height: 100vh;
+  overflow-y: auto;
   padding: 24px 18px;
 }
 
@@ -99,10 +146,12 @@ a {
 }
 
 .nav a,
-.nav button {
+.nav button,
+.nav-logout-button {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   min-height: 40px;
   border: 0;
   border-radius: 8px;
@@ -119,7 +168,13 @@ a {
   color: #ffffff;
 }
 
+.nav-logout-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
 .content {
+  height: 100vh;
+  overflow-y: auto;
   padding: 26px;
 }
 
@@ -228,6 +283,50 @@ h1 {
   padding: 0 12px;
   color: var(--text);
   background: #fbfcfd;
+}
+
+.password-control {
+  position: relative;
+}
+
+.password-control input {
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  background: #edf2f5;
+  color: var(--text);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid rgba(18, 140, 126, 0.35);
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
 .field textarea {
@@ -403,6 +502,12 @@ td {
   padding: 18px;
 }
 
+.empty-state {
+  color: var(--muted);
+  margin: 0;
+  padding: 10px 0;
+}
+
 .reader {
   display: grid;
   min-height: 100vh;
@@ -428,14 +533,24 @@ td {
 @media (max-width: 980px) {
   .shell {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
   }
 
   .sidebar {
+    height: auto;
+    overflow: visible;
     padding: 16px;
   }
 
   .nav {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .content {
+    height: auto;
+    overflow: visible;
   }
 
   .topbar {

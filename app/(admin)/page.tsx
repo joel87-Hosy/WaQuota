@@ -138,6 +138,14 @@ export default async function DashboardPage({
                 </tr>
               </thead>
               <tbody>
+                {sorted.length === 0 ? (
+                  <tr>
+                    <td colSpan={5}>
+                      <p className="empty-state">Aucun devis pour le moment.</p>
+                    </td>
+                  </tr>
+                ) : null}
+
                 {sorted.map((quote) => {
                   const urgentQuote = isUrgent(quote.created_at, quote.opened, delay);
                   const message = whatsappMessage(quote, profile);

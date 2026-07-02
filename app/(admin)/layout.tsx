@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { signOut } from "@/app/actions";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminLayout({
@@ -32,9 +31,9 @@ export default async function AdminLayout({
           <Link href="/">Tableau</Link>
           <Link href="/quotes">Devis</Link>
           <Link href="/settings">Reglages</Link>
-          <form action={signOut}>
-            <button type="submit">Deconnexion</button>
-          </form>
+          <a className="nav-logout-button" href="/logout">
+            Deconnexion
+          </a>
         </nav>
       </aside>
 

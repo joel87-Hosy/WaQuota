@@ -43,12 +43,15 @@
       .shell {
         display: grid;
         grid-template-columns: 248px minmax(0, 1fr);
-        min-height: 100vh;
+        height: 100vh;
+        overflow: hidden;
       }
 
       .sidebar {
         background: #10221f;
         color: #f5fbf8;
+        height: 100vh;
+        overflow-y: auto;
         padding: 24px 18px;
       }
 
@@ -84,14 +87,20 @@
         gap: 8px;
       }
 
-      .nav a {
+      .nav a,
+      .nav button {
         display: flex;
         align-items: center;
         gap: 10px;
+        width: 100%;
         min-height: 40px;
+        border: 0;
         border-radius: 8px;
+        background: transparent;
         color: #d6e4df;
+        cursor: pointer;
         padding: 0 12px;
+        text-align: left;
         text-decoration: none;
       }
 
@@ -100,6 +109,10 @@
         color: #ffffff;
       }
 
+      .nav button:hover {
+        background: rgba(255, 255, 255, 0.14);
+        color: #ffffff;
+      }
       .view {
         display: none;
       }
@@ -109,6 +122,8 @@
       }
 
       .content {
+        height: 100vh;
+        overflow-y: auto;
         padding: 26px;
       }
 
@@ -477,15 +492,25 @@
       @media (max-width: 860px) {
         .shell {
           grid-template-columns: 1fr;
+          height: auto;
+          min-height: 100vh;
+          overflow: visible;
         }
 
         .sidebar {
+          height: auto;
+          overflow: visible;
           position: static;
           padding: 16px;
         }
 
         .nav {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .content {
+          height: auto;
+          overflow: visible;
         }
 
         .topbar {
@@ -523,6 +548,7 @@
           <a class="active" href="#dashboard" data-view-link="dashboard">Tableau</a>
           <a href="#quotes" data-view-link="quotes">Devis</a>
           <a href="#settings" data-view-link="settings">R&eacute;glages</a>
+          <a href="http://localhost:3000/logout">D&eacute;connexion</a>
         </nav>
       </aside>
 
@@ -537,15 +563,15 @@
             <section class="stats" aria-label="Statistiques">
               <div class="stat">
                 <span>Devis envoy&eacute;s</span>
-                <strong>18</strong>
+                <strong>0</strong>
               </div>
               <div class="stat">
                 <span>Ouverts</span>
-                <strong>11</strong>
+                <strong>0</strong>
               </div>
               <div class="stat">
                 <span>&Agrave; relancer</span>
-                <strong>5</strong>
+                <strong>0</strong>
               </div>
             </section>
           </header>
@@ -604,66 +630,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>
-                      <div class="name">
-                        <strong>Amadou Traor&eacute;</strong>
-                        <span>Envoy&eacute; il y a 3 jours</span>
-                      </div>
-                    </td>
-                    <td>1 250 000 FCFA</td>
-                    <td><span class="badge red">Pas ouvert</span></td>
-                    <td>0</td>
-                    <td>
-                      <a
-                        class="whatsapp"
-                        target="_blank"
-                        rel="noreferrer"
-                        href="https://wa.me/2250700000000?text=Bonjour%20Amadou%2C%20je%20me%20permets%20de%20vous%20relancer%20concernant%20le%20devis%20envoy%C3%A9.%20Voici%20le%20lien%20%3A%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken"
-                      >
-                        Relancer sur WhatsApp
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="name">
-                        <strong>Awa Kouam&eacute;</strong>
-                        <span>Vu aujourd&rsquo;hui &agrave; 09:42</span>
-                      </div>
-                    </td>
-                    <td>480 000 FCFA</td>
-                    <td><span class="badge green">Vu le 30/06</span></td>
-                    <td>3</td>
-                    <td>
-                      <a
-                        class="whatsapp"
-                        target="_blank"
-                        rel="noreferrer"
-                        href="https://wa.me/2250500000000?text=Bonjour%20Awa%2C%20avez-vous%20pu%20regarder%20le%20devis%20%3F%20Je%20reste%20disponible%20si%20vous%20avez%20des%20questions.%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken"
-                      >
-                        Demander un retour
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="name">
-                        <strong>Soci&eacute;t&eacute; Nimba</strong>
-                        <span>Envoy&eacute; il y a 18h</span>
-                      </div>
-                    </td>
-                    <td>2 900 000 FCFA</td>
-                    <td><span class="badge amber">En attente</span></td>
-                    <td>0</td>
-                    <td>
-                      <a
-                        class="whatsapp"
-                        target="_blank"
-                        rel="noreferrer"
-                        href="https://wa.me/2250100000000?text=Bonjour%2C%20voici%20le%20lien%20du%20devis%20%3A%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken"
-                      >
-                        Ouvrir WhatsApp
-                      </a>
+                    <td colspan="5">
+                      <p class="notice">Aucun devis pour le moment.</p>
                     </td>
                   </tr>
                 </tbody>
@@ -691,7 +659,7 @@
                   <div class="pdf-total">750 000 FCFA</div>
                 </div>
               </div>
-              <a class="public-link" href="#">monsite.com/read/0f4d...91b</a>
+              <a class="public-link" href="#">Lien public apres creation</a>
             </div>
           </article>
           </div>
@@ -713,33 +681,7 @@
               </div>
 
               <div class="list">
-                <section class="quote-card">
-                  <header>
-                    <div>
-                      <h3>DEV-2026-018 - Amadou Traor&eacute;</h3>
-                      <p>1 250 000 FCFA - cr&eacute;&eacute; le 27/06/2026</p>
-                    </div>
-                    <span class="badge red">Pas ouvert</span>
-                  </header>
-                  <div class="quote-actions">
-                    <a class="secondary" href="#">Copier le lien</a>
-                    <a class="whatsapp" target="_blank" rel="noreferrer" href="https://wa.me/2250700000000?text=Bonjour%20Amadou%2C%20voici%20le%20lien%20du%20devis%20%3A%20https%3A%2F%2Fmonsite.com%2Fread%2Ftoken">WhatsApp</a>
-                  </div>
-                </section>
-
-                <section class="quote-card">
-                  <header>
-                    <div>
-                      <h3>DEV-2026-017 - Awa Kouam&eacute;</h3>
-                      <p>480 000 FCFA - ouvert 3 fois</p>
-                    </div>
-                    <span class="badge green">Vu</span>
-                  </header>
-                  <div class="quote-actions">
-                    <a class="secondary" href="#">Voir le PDF</a>
-                    <a class="whatsapp" target="_blank" rel="noreferrer" href="https://wa.me/2250500000000?text=Bonjour%20Awa%2C%20avez-vous%20pu%20regarder%20le%20devis%20%3F">Relancer</a>
-                  </div>
-                </section>
+                <p class="notice">Aucun devis pour le moment.</p>
               </div>
             </article>
 
@@ -751,11 +693,11 @@
               <div class="form">
                 <div class="field">
                   <label>Token public</label>
-                  <input value="0f4d9f6a-72c1-4f10-91b0-demo" readonly />
+                  <input value="" readonly />
                 </div>
                 <div class="field">
                   <label>Chemin Storage</label>
-                  <input value="user-id/dev-2026-018.pdf" readonly />
+                  <input value="" readonly />
                 </div>
                 <div class="field">
                   <label>Dernier &eacute;v&eacute;nement</label>
@@ -783,11 +725,11 @@
               <form class="form">
                 <div class="field">
                   <label for="company-name">Nom commercial</label>
-                  <input id="company-name" value="WaQuote Demo" />
+                  <input id="company-name" />
                 </div>
                 <div class="field">
                   <label for="sender-phone">Num&eacute;ro WhatsApp</label>
-                  <input id="sender-phone" value="+2250102030405" />
+                  <input id="sender-phone" />
                 </div>
                 <button class="primary" type="button">Enregistrer</button>
               </form>
