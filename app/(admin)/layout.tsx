@@ -31,10 +31,13 @@ export default async function AdminLayout({
           <Link href="/">Tableau</Link>
           <Link href="/quotes">Devis</Link>
           <Link href="/settings">Reglages</Link>
+        </nav>
+
+        <div className="sidebar-footer">
           <a className="nav-logout-button" href="/logout">
             Deconnexion
           </a>
-        </nav>
+        </div>
       </aside>
 
       <main className="content">{children}</main>
