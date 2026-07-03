@@ -77,8 +77,8 @@ export default async function DashboardPage({
 
       {searchParams.error ? <p className="notice">{searchParams.error}</p> : null}
 
-      <section className="grid">
-        <article className="panel">
+      <section className="grid dashboard-split">
+        <article className="panel quote-create-panel">
           <div className="panel-header">
             <h2>Nouveau devis</h2>
             <p>Le PDF sera stocke dans le bucket prive Supabase.</p>
@@ -108,7 +108,7 @@ export default async function DashboardPage({
           </form>
         </article>
 
-        <article className="panel">
+        <article className="panel dashboard-panel">
           <div className="panel-header">
             <h2>Dashboard</h2>
             <p>Les devis non ouverts apres {delay}h remontent en priorite.</p>
