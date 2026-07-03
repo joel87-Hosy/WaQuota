@@ -426,6 +426,12 @@ h1 {
   transform: translateY(-1px);
 }
 
+.drop-ready {
+  border-color: var(--green);
+  background: var(--green-bg);
+  color: var(--green-dark);
+}
+
 .drop strong {
   color: var(--text);
   display: block;

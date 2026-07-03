@@ -34,14 +34,15 @@ export function quotePublicUrl(token: string) {
 export function quoteReminderMessage(quote: Quote, profile: Profile | null) {
   const amount = formatMoney(quote.amount, profile?.currency || "FCFA");
   const link = quotePublicUrl(quote.public_token);
+  const linkBlock = `\n${link}`;
   const template =
     profile?.reminder_template ||
-    "Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}. Voici le lien : {{link}}";
+    "Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}.\n\nLien du devis : {{link}}";
 
   return template
     .replaceAll("{{prospect}}", quote.prospect_name)
     .replaceAll("{{amount}}", amount)
-    .replaceAll("{{link}}", link);
+    .replaceAll("{{link}}", linkBlock);
 }
 
 export function isUrgent(createdAt: string, opened: boolean, delayHours = 48) {

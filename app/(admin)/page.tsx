@@ -1,4 +1,5 @@
 import { createQuote, markReminderSent } from "@/app/actions";
+import { FileDrop } from "@/app/(admin)/file-drop";
 import { CopyLinkButton } from "@/app/(admin)/quotes/copy-link-button";
 import {
   buildWhatsappUrl,
@@ -84,13 +85,7 @@ export default async function DashboardPage({
           </div>
 
           <form className="form" action={createQuote}>
-            <label className="drop">
-              <input name="pdf" type="file" accept="application/pdf" required hidden />
-              <span>
-                <strong>Deposer le PDF</strong>
-                PDF uniquement, 10 Mo maximum
-              </span>
-            </label>
+            <FileDrop />
 
             <div className="field">
               <label htmlFor="prospect-name">Nom du prospect</label>

@@ -14,7 +14,9 @@ create table if not exists public.profiles (
   whatsapp_phone text not null default '',
   currency text not null default 'FCFA',
   reminder_delay_hours integer not null default 48,
-  reminder_template text not null default 'Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}. Voici le lien : {{link}}',
+  reminder_template text not null default 'Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}.
+
+Lien du devis : {{link}}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
 

@@ -75,7 +75,7 @@ export default async function SettingsPage({
                 name="reminder_template"
                 defaultValue={
                   profile?.reminder_template ||
-                  "Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}. Voici le lien : {{link}}"
+                  "Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}.\n\nLien du devis : {{link}}"
                 }
               />
             </div>
