@@ -1,26 +1,14 @@
-import { createQuote } from "@/app/actions";
+import { createQuote, markReminderSent } from "@/app/actions";
+import { CopyLinkButton } from "@/app/(admin)/quotes/copy-link-button";
 import {
   buildWhatsappUrl,
   formatDateTime,
   formatMoney,
   isUrgent,
-  quotePublicUrl,
+  quoteReminderMessage,
 } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile, Quote } from "@/lib/types";
-
-function whatsappMessage(quote: Quote, profile: Profile | null) {
-  const amount = formatMoney(quote.amount, profile?.currency || "FCFA");
-  const link = quotePublicUrl(quote.public_token);
-  const template =
-    profile?.reminder_template ||
-    "Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}. Voici le lien : {{link}}";
-
-  return template
-    .replaceAll("{{prospect}}", quote.prospect_name)
-    .replaceAll("{{amount}}", amount)
-    .replaceAll("{{link}}", link);
-}
 
 export default async function DashboardPage({
   searchParams,
@@ -56,6 +44,7 @@ export default async function DashboardPage({
 
   const opened = rows.filter((quote) => quote.opened).length;
   const urgent = rows.filter((quote) => isUrgent(quote.created_at, quote.opened, delay)).length;
+  const reminded = rows.filter((quote) => quote.reminder_sent_at).length;
 
   return (
     <>
@@ -77,6 +66,10 @@ export default async function DashboardPage({
           <div className="stat">
             <span>A relancer</span>
             <strong>{urgent}</strong>
+          </div>
+          <div className="stat">
+            <span>Relances envoyees</span>
+            <strong>{reminded}</strong>
           </div>
         </section>
       </header>
@@ -148,7 +141,7 @@ export default async function DashboardPage({
 
                 {sorted.map((quote) => {
                   const urgentQuote = isUrgent(quote.created_at, quote.opened, delay);
-                  const message = whatsappMessage(quote, profile);
+                  const message = quoteReminderMessage(quote, profile);
                   const href = buildWhatsappUrl(quote.prospect_phone, message);
 
                   return (
@@ -164,16 +157,32 @@ export default async function DashboardPage({
                         {quote.opened ? (
                           <span className="badge green">Vu le {formatDateTime(quote.opened_at)}</span>
                         ) : urgentQuote ? (
-                          <span className="badge red">Pas ouvert</span>
+                          <span className="badge red">Relance a faire</span>
                         ) : (
                           <span className="badge amber">En attente</span>
                         )}
                       </td>
-                      <td>{quote.open_count}</td>
                       <td>
-                        <a className="whatsapp" target="_blank" rel="noreferrer" href={href}>
-                          {quote.opened ? "Demander un retour" : "Relancer sur WhatsApp"}
-                        </a>
+                        {quote.open_count}
+                        <span className="muted" style={{ display: "block" }}>
+                          Relances : {quote.reminder_count || 0}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="quote-actions">
+                          <CopyLinkButton value={message} label="Copier message" copiedLabel="Message copie" />
+                          <a className="whatsapp" target="_blank" rel="noreferrer" href={href}>
+                            Ouvrir WhatsApp
+                          </a>
+                          {!quote.opened ? (
+                            <form action={markReminderSent}>
+                              <input name="id" type="hidden" value={quote.id} />
+                              <button className="secondary" type="submit">
+                                Relance envoyee
+                              </button>
+                            </form>
+                          ) : null}
+                        </div>
                       </td>
                     </tr>
                   );

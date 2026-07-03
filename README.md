@@ -43,3 +43,12 @@ Puis ouvrir `http://localhost:3000`.
 - `/quotes` : liste des devis
 - `/settings` : reglages entreprise et modele WhatsApp
 - `/read/[token]` : page publique trackee du devis
+
+## Checklist production pro
+
+- Domaine personnalise : configurer le domaine dans Render, puis mettre `NEXT_PUBLIC_APP_URL=https://votre-domaine.com`.
+- Supabase Auth : ajouter le domaine dans `Authentication > URL Configuration`.
+- Email de confirmation personnalise : configurer `Authentication > Email Templates` dans Supabase.
+- Reset mot de passe : ajouter `https://votre-domaine.com/auth/callback` dans les redirect URLs Supabase.
+- WhatsApp automatise : brancher un fournisseur WhatsApp Business API avant d'envoyer automatiquement les relances.
+- Secrets : ne jamais publier `.env.local`; ajouter les variables directement dans Render.

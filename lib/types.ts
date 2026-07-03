@@ -9,6 +9,8 @@ export type Quote = {
   opened: boolean;
   opened_at: string | null;
   open_count: number;
+  reminder_sent_at: string | null;
+  reminder_count: number;
   created_at: string;
   updated_at: string;
 };

@@ -41,6 +41,22 @@ export async function signUp(formData: FormData) {
   redirect("/");
 }
 
+export async function requestPasswordReset(formData: FormData) {
+  const supabase = createClient();
+  const email = String(formData.get("email") || "").trim();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${appUrl.replace(/\/$/, "")}/auth/callback?next=/reset-password`,
+  });
+
+  if (error) {
+    redirect(`/login?mode=reset&error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect("/login?mode=reset&message=Email%20de%20reinitialisation%20envoye");
+}
+
 export async function signOut() {
   const supabase = createClient();
   await supabase.auth.signOut();
@@ -96,6 +112,105 @@ export async function createQuote(formData: FormData) {
 
   revalidatePath("/");
   redirect("/");
+}
+
+export async function updateQuote(formData: FormData) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const id = String(formData.get("id") || "");
+  const prospectName = String(formData.get("prospect_name") || "").trim();
+  const prospectPhone = String(formData.get("prospect_phone") || "").trim();
+  const amount = Number(formData.get("amount") || 0);
+
+  const { error } = await supabase
+    .from("quotes")
+    .update({
+      prospect_name: prospectName,
+      prospect_phone: prospectPhone,
+      amount,
+    })
+    .eq("id", id)
+    .eq("user_id", user!.id);
+
+  if (error) {
+    redirect(`/quotes?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/quotes");
+  redirect("/quotes");
+}
+
+export async function deleteQuote(formData: FormData) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const id = String(formData.get("id") || "");
+  const pdfPath = String(formData.get("pdf_path") || "");
+
+  await supabase.storage.from("quotes-pdf").remove([pdfPath]);
+
+  const { error } = await supabase.from("quotes").delete().eq("id", id).eq("user_id", user!.id);
+
+  if (error) {
+    redirect(`/quotes?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/quotes");
+  redirect("/quotes");
+}
+
+export async function markReminderSent(formData: FormData) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const id = String(formData.get("id") || "");
+  const { data: quote } = await supabase
+    .from("quotes")
+    .select("reminder_count")
+    .eq("id", id)
+    .eq("user_id", user!.id)
+    .maybeSingle();
+
+  const reminderCount =
+    typeof quote?.reminder_count === "number" ? quote.reminder_count + 1 : 1;
+
+  const { error } = await supabase
+    .from("quotes")
+    .update({
+      reminder_sent_at: new Date().toISOString(),
+      reminder_count: reminderCount,
+    })
+    .eq("id", id)
+    .eq("user_id", user!.id);
+
+  if (error) {
+    redirect(`/quotes?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/quotes");
+  redirect("/quotes?filter=due");
 }
 
 export async function saveSettings(formData: FormData) {

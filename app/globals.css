@@ -105,6 +105,23 @@ a {
   min-height: 42px;
 }
 
+.auth-links {
+  display: grid;
+  gap: 10px;
+}
+
+.ghost-link {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.ghost-link:hover {
+  color: var(--green-dark);
+}
+
 .shell {
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr);
@@ -226,9 +243,9 @@ h1 {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
   gap: 14px;
-  min-width: 430px;
+  min-width: 560px;
 }
 
 .stat,
@@ -416,7 +433,8 @@ h1 {
 
 .primary,
 .secondary,
-.whatsapp {
+.whatsapp,
+.danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -466,6 +484,23 @@ h1 {
 .whatsapp:hover {
   background: #d5f4e3;
   transform: translateY(-1px);
+}
+
+.danger {
+  border: 1px solid #f1c2bd;
+  background: #fff4f2;
+  color: var(--red);
+}
+
+.danger:hover {
+  background: #ffe9e5;
+  transform: translateY(-1px);
+}
+
+.primary:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
 }
 
 .table-wrap {
@@ -592,6 +627,17 @@ tbody tr:hover td {
   gap: 8px;
 }
 
+.quote-actions form {
+  display: inline-flex;
+}
+
+.quote-edit-form {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(130px, 0.8fr) minmax(100px, 0.6fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
 .notice {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -600,10 +646,34 @@ tbody tr:hover td {
   padding: 18px;
 }
 
+.notice.success {
+  border-color: rgba(15, 143, 127, 0.25);
+  background: var(--green-bg);
+  color: var(--green-dark);
+}
+
 .empty-state {
   color: var(--muted);
   margin: 0;
   padding: 10px 0;
+}
+
+.error-card {
+  display: grid;
+  gap: 12px;
+}
+
+.error-code {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 30px;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--red-bg);
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 0 10px;
 }
 
 .reader {
@@ -668,6 +738,10 @@ tbody tr:hover td {
   .grid,
   .settings-grid,
   .quotes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-edit-form {
     grid-template-columns: 1fr;
   }
 }

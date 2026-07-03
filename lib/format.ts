@@ -1,3 +1,5 @@
+import type { Profile, Quote } from "@/lib/types";
+
 export function formatMoney(amount: number, currency = "FCFA") {
   return `${new Intl.NumberFormat("fr-FR").format(amount)} ${currency}`;
 }
@@ -27,6 +29,19 @@ export function buildWhatsappUrl(phone: string, text: string) {
 export function quotePublicUrl(token: string) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   return `${appUrl.replace(/\/$/, "")}/read/${token}`;
+}
+
+export function quoteReminderMessage(quote: Quote, profile: Profile | null) {
+  const amount = formatMoney(quote.amount, profile?.currency || "FCFA");
+  const link = quotePublicUrl(quote.public_token);
+  const template =
+    profile?.reminder_template ||
+    "Bonjour {{prospect}}, je me permets de vous relancer concernant le devis de {{amount}}. Voici le lien : {{link}}";
+
+  return template
+    .replaceAll("{{prospect}}", quote.prospect_name)
+    .replaceAll("{{amount}}", amount)
+    .replaceAll("{{link}}", link);
 }
 
 export function isUrgent(createdAt: string, opened: boolean, delayHours = 48) {
