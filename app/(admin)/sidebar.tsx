@@ -1,12 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    router.prefetch("/");
+    router.prefetch("/quotes");
+    router.prefetch("/settings");
+  }, [router]);
 
   function closeMenu() {
     setIsOpen(false);
