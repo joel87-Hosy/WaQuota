@@ -439,6 +439,25 @@
         white-space: nowrap;
       }
 
+      .danger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        border: 1px solid #f1c2bd;
+        border-radius: 8px;
+        background: var(--red-bg);
+        color: var(--red);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 0 12px;
+      }
+
+      .danger:hover {
+        background: #ffe4e0;
+      }
+
       .viewer {
         padding: 18px;
       }
@@ -731,6 +750,9 @@
                 <div class="field">
                   <label>Dernier &eacute;v&eacute;nement</label>
                   <input value="Aucune ouverture d&eacute;tect&eacute;e" readonly />
+                </div>
+                <div class="quote-actions">
+                  <button class="danger" type="button">Supprimer</button>
                 </div>
               </div>
             </article>
