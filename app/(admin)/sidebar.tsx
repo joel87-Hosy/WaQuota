@@ -58,9 +58,11 @@ export function Sidebar() {
           </nav>
 
           <div className="sidebar-footer">
-            <a className="nav-logout-button" href="/logout">
-              Deconnexion
-            </a>
+            <form action="/logout" method="post">
+              <button className="nav-logout-button" type="submit">
+                Deconnexion
+              </button>
+            </form>
           </div>
         </div>
       </div>
