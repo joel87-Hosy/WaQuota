@@ -27,6 +27,12 @@ Executer les migrations dans Supabase :
 
 - `supabase/migrations/20260630000000_init_waquote_schema.sql`
 - `supabase/migrations/20260630001000_add_profiles.sql`
+- `supabase/migrations/20260711000000_seed_admin_account.sql`
+
+Compte admin initial :
+
+- Email : `admin@waquote.local`
+- Mot de passe : `admin123`
 
 ## Developpement
 

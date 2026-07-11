@@ -40,6 +40,97 @@
         font: inherit;
       }
 
+      .auth-page {
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .auth-card {
+        width: min(430px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 24px 70px rgba(24, 32, 38, 0.14);
+        padding: 26px;
+      }
+
+      .auth-intro {
+        margin: 0 0 18px;
+      }
+
+      .auth-intro h1 {
+        font-size: 26px;
+      }
+
+      .auth-intro p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .auth-error {
+        display: none;
+        border: 1px solid #f1c2bd;
+        border-radius: 8px;
+        background: var(--red-bg);
+        color: var(--red);
+        font-size: 13px;
+        font-weight: 700;
+        margin: 0 18px;
+        padding: 12px;
+      }
+
+      .auth-error.visible {
+        display: block;
+      }
+
+      .auth-help {
+        border: 1px solid rgba(18, 140, 126, 0.22);
+        border-radius: 8px;
+        background: var(--green-bg);
+        color: #315d55;
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 0 18px 18px;
+        padding: 12px;
+      }
+
+      .auth-help strong {
+        color: var(--green-dark);
+      }
+
+      .password-control {
+        position: relative;
+      }
+
+      .password-control input {
+        padding-right: 48px;
+      }
+
+      .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 18px;
+        transform: translateY(-50%);
+      }
+
+      .password-toggle:hover {
+        background: #edf2f5;
+        color: var(--text);
+      }
+
       .shell {
         display: grid;
         grid-template-columns: 248px minmax(0, 1fr);
@@ -114,6 +205,7 @@
       .sidebar-footer a {
         display: flex;
         align-items: center;
+        justify-content: center;
         width: 100%;
         min-height: 40px;
         border: 1px solid rgba(255, 255, 255, 0.12);
@@ -122,6 +214,20 @@
         color: #ffffff;
         padding: 0 12px;
         text-decoration: none;
+      }
+
+      .sidebar-footer button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
+        cursor: pointer;
+        padding: 0 12px;
       }
 
       .nav a.active {
@@ -529,6 +635,14 @@
       }
 
       @media (max-width: 860px) {
+        .auth-page {
+          padding: 16px;
+        }
+
+        .auth-card {
+          padding: 18px;
+        }
+
         .shell {
           grid-template-columns: 1fr;
           height: auto;
@@ -579,7 +693,60 @@
     </style>
   </head>
   <body>
-    <div class="shell">
+    <main class="auth-page" id="login-page">
+      <section class="auth-card" aria-labelledby="login-title">
+        <div class="brand" style="color: #182026; margin-bottom: 18px">
+          <div class="brand-mark">WQ</div>
+          <div>
+            <strong>WaQuote</strong>
+            <span style="color: #68737d">Connexion admin</span>
+          </div>
+        </div>
+
+        <div class="auth-intro">
+          <h1 id="login-title">Acces administrateur</h1>
+          <p>Connectez-vous pour gerer les devis PDF, les ouvertures et les relances WhatsApp.</p>
+        </div>
+
+        <p class="auth-help">
+          Compte admin de demo : <strong>admin@waquote.local</strong><br />
+          Mot de passe : <strong>admin123</strong>
+        </p>
+
+        <p class="auth-error" id="login-error">Email ou mot de passe incorrect.</p>
+
+        <form class="form" id="login-form">
+          <div class="field">
+            <label for="admin-email">Email</label>
+            <input id="admin-email" type="email" autocomplete="username" required />
+          </div>
+
+          <div class="field">
+            <label for="admin-password">Mot de passe</label>
+            <div class="password-control">
+              <input
+                id="admin-password"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+              <button
+                aria-label="Afficher le mot de passe"
+                class="password-toggle"
+                id="password-toggle"
+                type="button"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <button class="primary" type="submit">Se connecter</button>
+        </form>
+      </section>
+    </main>
+
+    <div class="shell" id="app-shell" hidden>
       <aside class="sidebar">
         <div class="brand">
           <div class="brand-mark">WQ</div>
@@ -596,7 +763,7 @@
         </nav>
 
         <div class="sidebar-footer">
-          <a href="http://localhost:3000/logout">D&eacute;connexion</a>
+          <button id="logout-button" type="button">D&eacute;connexion</button>
         </div>
       </aside>
 
@@ -805,6 +972,57 @@
     </div>
 
     <script>
+      const adminAccount = {
+        email: "admin@waquote.local",
+        password: "admin123",
+      };
+
+      const loginPage = document.getElementById("login-page");
+      const appShell = document.getElementById("app-shell");
+      const loginForm = document.getElementById("login-form");
+      const loginError = document.getElementById("login-error");
+      const logoutButton = document.getElementById("logout-button");
+      const passwordInput = document.getElementById("admin-password");
+      const passwordToggle = document.getElementById("password-toggle");
+
+      function setAuthenticated(isAuthenticated) {
+        loginPage.hidden = isAuthenticated;
+        appShell.hidden = !isAuthenticated;
+        localStorage.setItem("waquote_admin_session", isAuthenticated ? "1" : "0");
+      }
+
+      loginForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById("admin-email").value.trim().toLowerCase();
+        const password = passwordInput.value;
+        const isValid = email === adminAccount.email && password === adminAccount.password;
+
+        loginError.classList.toggle("visible", !isValid);
+
+        if (isValid) {
+          setAuthenticated(true);
+          loginForm.reset();
+        }
+      });
+
+      passwordToggle.addEventListener("click", () => {
+        const isPasswordVisible = passwordInput.type === "text";
+        passwordInput.type = isPasswordVisible ? "password" : "text";
+        passwordToggle.textContent = isPasswordVisible ? "+" : "-";
+        passwordToggle.setAttribute(
+          "aria-label",
+          isPasswordVisible ? "Afficher le mot de passe" : "Masquer le mot de passe",
+        );
+      });
+
+      logoutButton.addEventListener("click", () => {
+        setAuthenticated(false);
+        history.replaceState(null, "", "#login");
+      });
+
+      setAuthenticated(localStorage.getItem("waquote_admin_session") === "1");
+
       const links = document.querySelectorAll("[data-view-link]");
       const views = document.querySelectorAll(".view");
 
