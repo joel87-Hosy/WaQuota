@@ -8,8 +8,19 @@ type CookieToSet = {
   options: CookieOptions;
 };
 
+function getLoginUrl(request: NextRequest) {
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+
+  if (forwardedHost) {
+    return new URL("/login", `${forwardedProto || "https"}://${forwardedHost}`);
+  }
+
+  return new URL("/login", request.url);
+}
+
 async function logout(request: NextRequest) {
-  const response = NextResponse.redirect(new URL("/login", request.url));
+  const response = NextResponse.redirect(getLoginUrl(request), 303);
   const supabase = createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
     cookies: {
       getAll() {
